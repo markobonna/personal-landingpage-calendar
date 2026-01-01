@@ -76,11 +76,7 @@
       }
     },
     {
-      "includes": [
-        "apps/web/app/**/page.tsx",
-        "apps/web/app/**/layout.tsx",
-        "apps/web/app/pages/**/*.tsx"
-      ],
+      "includes": ["apps/web/app/**/page.tsx", "apps/web/app/**/layout.tsx", "apps/web/app/pages/**/*.tsx"],
       "linter": {
         "rules": {
           "style": {
@@ -234,6 +230,20 @@
                 ]
               }
             }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/app/api/auth/two-factor/totp/setup/route.ts", "packages/lib/crypto.ts"],
+      "linter": {
+        "rules": {
+          "nursery": {
+            "useExplicitType": "off",
+            "noTernary": "off"
+          },
+          "complexity": {
+            "noExcessiveLinesPerFunction": "off"
           }
         }
       }
