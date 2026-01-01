@@ -16,7 +16,8 @@ export const symmetricEncrypt = (text: string, key: string): string => {
   console.log("[Crypto] symmetricEncrypt called");
   console.log("[Crypto] Key length (string):", key.length);
 
-  const _key = Buffer.from(key, "latin1");
+  // Decode base64 key to get 32 bytes
+  const _key = Buffer.from(key, "base64");
   console.log("[Crypto] Key buffer length:", _key.length);
 
   if (_key.length !== 32) {
@@ -52,7 +53,8 @@ export const symmetricDecrypt = (text: string, key: string): string => {
   console.log("[Crypto] symmetricDecrypt called");
   console.log("[Crypto] Key length (string):", key.length);
 
-  const _key = Buffer.from(key, "latin1");
+  // Decode base64 key to get 32 bytes
+  const _key = Buffer.from(key, "base64");
   console.log("[Crypto] Key buffer length:", _key.length);
 
   if (_key.length !== 32) {
