@@ -108,3 +108,4 @@ packages/**/.yarn/ci-cache/
 
 # trigger.dev
 .trigger
+.env*.local
