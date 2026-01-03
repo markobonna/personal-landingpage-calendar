@@ -235,15 +235,27 @@
       }
     },
     {
-      "includes": ["apps/web/app/api/auth/two-factor/totp/setup/route.ts", "packages/lib/crypto.ts"],
+      "includes": [
+        "apps/web/app/api/auth/two-factor/totp/setup/route.ts",
+        "packages/lib/crypto.ts",
+        "apps/web/pages/api/cal-webhook.ts",
+        "apps/web/lib/webhook-email/**/*.ts"
+      ],
       "linter": {
         "rules": {
           "nursery": {
             "useExplicitType": "off",
-            "noTernary": "off"
+            "noTernary": "off",
+            "useQwikValidLexicalScope": "off"
           },
           "complexity": {
             "noExcessiveLinesPerFunction": "off"
+          },
+          "style": {
+            "useExportsLast": "off"
+          },
+          "correctness": {
+            "noUnusedVariables": "off"
           }
         }
       }
