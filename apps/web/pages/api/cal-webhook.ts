@@ -306,14 +306,33 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
     return;
   }
 
+  // Log the incoming webhook for debugging
+  console.log("Cal.com webhook received:", JSON.stringify({
+    triggerEvent: event.triggerEvent,
+    hasPayload: !!event.payload,
+    payloadKeys: event.payload ? Object.keys(event.payload) : [],
+  }));
+
   const trigger = normalizeTrigger(event.triggerEvent || event.event || event.type);
+  console.log("Normalized trigger:", trigger);
 
   if (trigger === "unknown") {
+    console.log("Ignoring unknown trigger:", event.triggerEvent || event.event || event.type);
     res.status(200).json({ ok: true, ignored: event.triggerEvent || event.event || event.type });
     return;
   }
 
   const payload = event.payload || event;
+
+  // Log payload details for debugging
+  console.log("Payload details:", JSON.stringify({
+    title: payload.title,
+    startTime: payload.startTime,
+    endTime: payload.endTime,
+    attendeesCount: payload.attendees?.length,
+    hasOrganizer: !!payload.organizer,
+    organizerEmail: payload.organizer?.email,
+  }));
 
   // Extract booking details
   const title = payload.title || "Meeting";
@@ -328,6 +347,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
   }
 
   if (!startTime || !endTime) {
+    console.log("Skipping: missing start/end time", { startTime: payload.startTime, endTime: payload.endTime });
     res.status(200).json({ ok: true, skipped: "missing start/end time" });
     return;
   }
@@ -335,6 +355,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
   const attendees = payload.attendees || payload.attendeesList || [];
   const attendee = attendees[0];
   if (!attendee?.email) {
+    console.log("Skipping: no attendee email", { attendees: JSON.stringify(attendees) });
     res.status(200).json({ ok: true, skipped: "no attendee email" });
     return;
   }
@@ -342,9 +363,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void>
   const hostEmail = payload.hostEmail || payload.organizer?.email;
   const hostName = payload.organizerName || payload.hostName || payload.organizer?.name;
   if (!hostEmail) {
+    console.log("Skipping: no host email", { organizer: JSON.stringify(payload.organizer) });
     res.status(200).json({ ok: true, skipped: "no host email" });
     return;
   }
+
+  console.log("Processing webhook for attendee:", attendee.email, "trigger:", trigger);
 
   const location =
     payload.location || payload.meetingUrl || payload.videoCallUrl || payload.conferenceUrl || "";
